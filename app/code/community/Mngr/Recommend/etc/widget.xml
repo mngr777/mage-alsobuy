@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<widget>
+    <similar_productds type="recommend/product_similar" translate="name description" module="recommend">
+        <name>Similar Products</name>
+        <description>List of Products often bought with given Product</description>
+        <is_email_compatible>0</is_email_compatible>
+        <parameters>
+            <number translate
+            <column_count translate="label">
+                <required>0</required>
+                <visible>1</visible>
+                <label>Number of Columns</label>
+            </column_count>
+    </similar_productds>
+</widget>
