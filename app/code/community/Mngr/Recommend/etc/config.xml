@@ -51,20 +51,11 @@
         </index>
 
         <events>
-            <sales_order_save_before>
-                <observers>
-                    <recommend_order_save_log_event>
-                        <class>recommend/observer</class>
-                        <method>orderSaveLogEvent</method>
-                    </recommend_order_save_log_event>
-                </observers>
-            </sales_order_save_before>
-
             <sales_order_save_commit_after>
                 <observers>
                     <recommend_order_save_index_events>
                         <class>recommend/observer</class>
-                        <method>orderSaveIndexEvents</method>
+                        <method>reindexOnOrderSave</method>
                     </recommend_order_save_index_events>
                 </observers>
             </sales_order_save_commit_after>

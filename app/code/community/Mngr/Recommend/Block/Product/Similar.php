@@ -9,6 +9,10 @@ extends Mage_Catalog_Block_Product_Abstract
         if (!$this->hasData('template'))
             $this->setData('template', 'recommend/product/similar.phtml');
         parent::_construct();
+
+        $this->addData(array('cache_lifetime' => 86400));
+        $this->addCacheTag(Mage_Catalog_Model_Product::CACHE_TAG);
+        $this->addCacheTag(Mngr_Recommend_Model_Indexer_Similarity::CACHE_TAG);
     }
 
     public function getProduct()
@@ -44,7 +48,8 @@ extends Mage_Catalog_Block_Product_Abstract
         if ($product) {
             $collection = Mage::getSingleton('recommend/product_similarity')
                 ->getSimilarProductCollection($product->getId());
-            $collection->setVisibility(Mage::getSingleton('catalog/product_visibility')->getVisibleInCatalogIds());
+            $collection->setVisibility(
+                Mage::getSingleton('catalog/product_visibility')->getVisibleInCatalogIds());
             $collection = $this->_addProductAttributesAndPrices($collection)
                 ->addStoreFilter()
                 ->setPageSize($number)
@@ -53,5 +58,19 @@ extends Mage_Catalog_Block_Product_Abstract
         } else {
             return null;
         }
+    }
+
+    public function getCacheKeyInfo()
+    {
+        return array(
+            'RECOMMEND_PRODUCT_SIMILAR',
+            Mage::app()->getStore()->getId(),
+            Mage::getDesign()->getPackageName(),
+            Mage::getDesign()->getTheme('template'),
+            Mage::getSingleton('customer/session')->getCustomerGroupId(),
+            'template' => $this->getTemplate(),
+            ($this->getProduct() ? $this->getProduct()->getId() : 0),
+            $this->getNumber(),
+            $this->getColumnCount());
     }
 }

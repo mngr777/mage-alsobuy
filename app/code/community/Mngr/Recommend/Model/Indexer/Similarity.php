@@ -5,14 +5,12 @@ extends Mage_Index_Model_Indexer_Abstract
     const EVENT_MATCH_RESULT_KEY = 'recommend_similarity_match_result';
     const EVENT_PRODUCT_IDS_KEY = 'recommend_product_ids_to_update';
     const SAVE_BUNDLE_SIZE = 100;
+    const CACHE_TAG = 'recommend_similarity_index';
+    const PROCESS_CODE = 'recommend_similarity';
 
-    protected $_matchedEntities = array(
-        Mage_Sales_Model_Order::ENTITY => array(
-            Mage_Index_Model_Event::TYPE_SAVE));
+    protected $_matchedEntities = array();
 
     protected $_productCustomerIds = array();
-
-    protected $_activeCustomerCount;
 
     protected $_updatedProductMarks = array();
 
@@ -37,6 +35,7 @@ extends Mage_Index_Model_Indexer_Abstract
             foreach ($this->_getPurchasedProductIds() as $productId)
                 $this->_updateProduct($productId);
             $this->_finishUpdate();
+            $this->_cleanCache();
         } catch (Exception $e) {
             // log and re-throw exception
             Mage::logException($e);
@@ -58,26 +57,23 @@ extends Mage_Index_Model_Indexer_Abstract
 
     protected function _registerEvent(Mage_Index_Model_Event $event)
     {
-        $event->addNewData(self::EVENT_MATCH_RESULT_KEY, true);
-        $productIds = $this->_getOrderProductIds($event->getDataObject());
-        $event->addNewData(self::EVENT_PRODUCT_IDS_KEY, $productIds);
-        return $this;
+
     }
 
     protected function _processEvent(Mage_Index_Model_Event $event)
     {
+
+    }
+
+    public function updateOrderProducts(Mage_Sales_Model_Order $order)
+    {
         Varien_Profiler::start(__METHOD__);
-        $data = $event->getNewData();
-        if (isset($data[self::EVENT_PRODUCT_IDS_KEY])
-            && is_array($data[self::EVENT_PRODUCT_IDS_KEY])
-        ) {
-            $this->_startUpdate();
-            $similarProductIds = $this->_getPurchasedProductIds();
-            foreach ($data[self::EVENT_PRODUCT_IDS_KEY] as $productId)
-                $this->_updateProduct($productId);
-            $this->_finishUpdate();
-        }
-        Varien_Profiler::start(__METHOD__);
+        $productIds = $this->_getOrderProductIds($order);
+        $this->_startUpdate();
+        foreach ($productIds as $productId)
+            $this->_updateProduct($productId);
+        $this->_finishUpdate();
+        Varien_Profiler::stop(__METHOD__);
     }
 
     protected function _startUpdate()
@@ -199,6 +195,11 @@ extends Mage_Index_Model_Indexer_Abstract
         return $similarity;
     }
 
+    protected function _cleanCache()
+    {
+        Mage::app()->cleanCache(self::CACHE_TAG);
+    }
+
     protected function _getResource()
     {
         return Mage::getResourceSingleton('recommend/product_similarity');
@@ -216,7 +217,6 @@ extends Mage_Index_Model_Indexer_Abstract
 
     protected function _resetCache() {
         $this->_productCustomerIds = array();
-        $this->_activeCustomerCount = null;
         $this->_updatedProductMarks = array();
     }
 }
