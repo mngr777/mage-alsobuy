@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Mngr_Recommend>
+        <Mngr_AlsoBuy>
             <active>true</active>
             <codePool>community</codePool>
             <depends>
                 <Mage_Catalog/>
             </depends>
-        </Mngr_Recommend>
+        </Mngr_AlsoBuy>
     </modules>
 </config>

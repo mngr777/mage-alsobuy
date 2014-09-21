@@ -1,5 +1,5 @@
 <?php
-class Mngr_Recommend_Block_Product_Similar
+class Mngr_AlsoBuy_Block_Product_AlsoBuy
 extends Mage_Catalog_Block_Product_Abstract
 {
     const DEFAULT_PRODUCT_COUNT = 10;
@@ -7,12 +7,12 @@ extends Mage_Catalog_Block_Product_Abstract
     protected function _construct()
     {
         if (!$this->hasData('template'))
-            $this->setData('template', 'recommend/product/similar.phtml');
+            $this->setData('template', 'alsobuy/product/alsobuy.phtml');
         parent::_construct();
 
         $this->addData(array('cache_lifetime' => 86400));
         $this->addCacheTag(Mage_Catalog_Model_Product::CACHE_TAG);
-        $this->addCacheTag(Mngr_Recommend_Model_Indexer_Similarity::CACHE_TAG);
+        $this->addCacheTag(Mngr_AlsoBuy_Model_Indexer_Similarity::CACHE_TAG);
     }
 
     public function getProduct()
@@ -46,7 +46,7 @@ extends Mage_Catalog_Block_Product_Abstract
             $number = $this->getNumber();
         $product = $this->getProduct();
         if ($product) {
-            $collection = Mage::getSingleton('recommend/product_similarity')
+            $collection = Mage::getSingleton('alsobuy/product_similarity')
                 ->getSimilarProductCollection($product->getId());
             $collection->setVisibility(
                 Mage::getSingleton('catalog/product_visibility')->getVisibleInCatalogIds());
@@ -63,7 +63,7 @@ extends Mage_Catalog_Block_Product_Abstract
     public function getCacheKeyInfo()
     {
         return array(
-            'RECOMMEND_PRODUCT_SIMILAR',
+            'ALSOBUY_PRODUCT_ALSOBUY',
             Mage::app()->getStore()->getId(),
             Mage::getDesign()->getPackageName(),
             Mage::getDesign()->getTheme('template'),

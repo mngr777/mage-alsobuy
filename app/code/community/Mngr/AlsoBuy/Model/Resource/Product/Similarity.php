@@ -1,10 +1,10 @@
 <?php
-class Mngr_Recommend_Model_Resource_Product_Similarity
+class Mngr_AlsoBuy_Model_Resource_Product_Similarity
 extends Mage_Core_Model_Resource_Db_Abstract
 {
     protected function _construct()
     {
-        $this->_init('recommend/product_similarity_index', 'id');
+        $this->_init('alsobuy/product_similarity_index', 'id');
     }
 
     public function saveDataBundle(array $data)

@@ -2,7 +2,7 @@
 $this->startSetup();
 
 $table = $this->getConnection()
-    ->newTable($this->getTable('recommend/product_similarity_index'))
+    ->newTable($this->getTable('alsobuy/product_similarity_index'))
     ->addColumn(
         'id', Varien_Db_Ddl_Table::TYPE_INTEGER, null,
         array(
@@ -29,29 +29,29 @@ $table = $this->getConnection()
         'Similarity value')
     ->addIndex(
         $this->getIdxName(
-            'recommend/product_similarity_index',
+            'alsobuy/product_similarity_index',
             array('product_id', 'similar_product_id'),
             Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE),
         array('product_id', 'similar_product_id'),
         Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE)
     ->addIndex(
         $this->getIdxName(
-            'recommend/product_similarity_index', array('product_id')),
+            'alsobuy/product_similarity_index', array('product_id')),
         array('product_id'))
     ->addIndex(
         $this->getIdxName(
-            'recommend/product_similarity_index', array('similar_product_id')),
+            'alsobuy/product_similarity_index', array('similar_product_id')),
         array('similar_product_id'))
     ->addForeignKey(
         $this->getFkName(
-            'recommend/product_similarity_index', 'product_id',
+            'alsobuy/product_similarity_index', 'product_id',
             'catalog/product', 'entity_id'),
         'product_id',
         $this->getTable('catalog/product'), 'entity_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE)
     ->addForeignKey(
         $this->getFkName(
-            'recommend/product_similarity_index', 'similar_product_id',
+            'alsobuy/product_similarity_index', 'similar_product_id',
             'catalog/product', 'entity_id'),
         'similar_product_id',
         $this->getTable('catalog/product'), 'entity_id',

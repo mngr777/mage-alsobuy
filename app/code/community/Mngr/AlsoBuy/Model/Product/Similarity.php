@@ -1,10 +1,10 @@
 <?php
-class Mngr_Recommend_Model_Product_Similarity
+class Mngr_AlsoBuy_Model_Product_Similarity
 extends Mage_Core_Model_Abstract
 {
     protected function _construct()
     {
-        $this->_init('recommend/product_similarity');
+        $this->_init('alsobuy/product_similarity');
     }
 
     public function getSimilarProductCollection($productId)

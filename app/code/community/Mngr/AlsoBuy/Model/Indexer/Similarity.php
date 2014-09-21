@@ -1,12 +1,12 @@
 <?php
-class Mngr_Recommend_Model_Indexer_Similarity
+class Mngr_AlsoBuy_Model_Indexer_Similarity
 extends Mage_Index_Model_Indexer_Abstract
 {
-    const EVENT_MATCH_RESULT_KEY = 'recommend_similarity_match_result';
-    const EVENT_PRODUCT_IDS_KEY = 'recommend_product_ids_to_update';
+    const EVENT_MATCH_RESULT_KEY = 'alsobuy_similarity_match_result';
+    const EVENT_PRODUCT_IDS_KEY = 'alsobuy_product_ids_to_update';
     const SAVE_BUNDLE_SIZE = 100;
-    const CACHE_TAG = 'recommend_similarity_index';
-    const PROCESS_CODE = 'recommend_similarity';
+    const CACHE_TAG = 'alsobuy_similarity_index';
+    const PROCESS_CODE = 'alsobuy_similarity';
 
     protected $_matchedEntities = array();
 
@@ -18,12 +18,12 @@ extends Mage_Index_Model_Indexer_Abstract
 
     public function getName()
     {
-        return Mage::helper('recommend')->__('Product Similarity');
+        return Mage::helper('alsobuy')->__('Product Similarity');
     }
 
     public function getDescription()
     {
-        return Mage::helper('recommend')->__(
+        return Mage::helper('alsobuy')->__(
             'Index product similarities using item-to-item algorithm');
     }
 
@@ -46,13 +46,7 @@ extends Mage_Index_Model_Indexer_Abstract
 
     public function matchEvent(Mage_Index_Model_Event $event)
     {
-        $data = $event->getNewData();
-        if (isset($data[self::EVENT_MATCH_RESULT_KEY])) {
-            return $data[self::EVENT_MATCH_RESULT_KEY];
-        }
-        $result = parent::matchEvent($event);
-        $event->addNewData(self::EVENT_MATCH_RESULT_KEY, $result);
-        return $result;
+        return false;
     }
 
     protected function _registerEvent(Mage_Index_Model_Event $event)
@@ -90,7 +84,7 @@ extends Mage_Index_Model_Indexer_Abstract
     protected function _updateProduct($productId)
     {
         Varien_Profiler::start(__METHOD__);
-        $resource = Mage::getResourceSingleton('recommend/product_similarity');
+        $resource = Mage::getResourceSingleton('alsobuy/product_similarity');
         $dataToSave = array();
         foreach ($this->_getPurchasedProductIds() as $similarProductId) {
             if ($similarProductId == $productId) continue;
@@ -202,7 +196,7 @@ extends Mage_Index_Model_Indexer_Abstract
 
     protected function _getResource()
     {
-        return Mage::getResourceSingleton('recommend/product_similarity');
+        return Mage::getResourceSingleton('alsobuy/product_similarity');
     }
 
     protected function _getReadAdapter()
