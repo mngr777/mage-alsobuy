@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mngr_AlsoBuy>
+            <version>1.0.0</version>
+        </Mngr_AlsoBuy>
+    </modules>
+
+    <global>
+        <helpers>
+            <alsobuy>
+                <class>Mngr_AlsoBuy_Helper</class>
+            </alsobuy>
+        </helpers>
+
+        <blocks>
+            <alsobuy>
+                <class>Mngr_AlsoBuy_Block</class>
+            </alsobuy>
+        </blocks>
+
+        <models>
+            <alsobuy>
+                <class>Mngr_AlsoBuy_Model</class>
+                <resourceModel>alsobuy_resource</resourceModel>
+            </alsobuy>
+            <alsobuy_resource>
+                <class>Mngr_AlsoBuy_Model_Resource</class>
+                <entities>
+                    <product_similarity_index>
+                        <table>alsobuy_product_similarity_index</table>
+                    </product_similarity_index>
+                </entities>
+            </alsobuy_resource>
+        </models>
+
+        <resources>
+            <alsobuy_setup>
+                <setup>
+                    <module>Mngr_AlsoBuy</module>
+                </setup>
+            </alsobuy_setup>
+        </resources>
+
+        <index>
+            <indexer>
+                <alsobuy_similarity>
+                    <model>alsobuy/indexer_similarity</model>
+                </alsobuy_similarity>
+            </indexer>
+        </index>
+
+        <events>
+            <sales_order_save_commit_after>
+                <observers>
+                    <alsobuy_order_save_index>
+                        <class>alsobuy/observer</class>
+                        <method>reindexOnOrderSave</method>
+                    </alsobuy_order_save_index>
+                </observers>
+            </sales_order_save_commit_after>
+        </events>
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <alsobuy>
+                    <file>alsobuy.xml</file>
+                </alsobuy>
+            </updates>
+        </layout>
+    </frontend>
+</config>
