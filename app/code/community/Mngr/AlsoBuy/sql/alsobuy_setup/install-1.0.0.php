@@ -33,7 +33,7 @@ $table = $this->getConnection()
             array('product_id', 'similar_product_id'),
             Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE),
         array('product_id', 'similar_product_id'),
-        Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE)
+        array('type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE))
     ->addIndex(
         $this->getIdxName(
             'alsobuy/product_similarity_index', array('product_id')),
