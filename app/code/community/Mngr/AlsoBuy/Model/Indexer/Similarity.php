@@ -2,13 +2,15 @@
 class Mngr_AlsoBuy_Model_Indexer_Similarity
 extends Mage_Index_Model_Indexer_Abstract
 {
-    const EVENT_MATCH_RESULT_KEY = 'alsobuy_similarity_match_result';
     const EVENT_PRODUCT_IDS_KEY = 'alsobuy_product_ids_to_update';
     const SAVE_BUNDLE_SIZE = 100;
     const CACHE_TAG = 'alsobuy_similarity_index';
     const PROCESS_CODE = 'alsobuy_similarity';
+    const ORDER_ENTITY = 'alsobuy_order';
 
-    protected $_matchedEntities = array();
+    protected $_matchedEntities = array(
+        self::ORDER_ENTITY => array(
+            Mage_Index_Model_Event::TYPE_SAVE));
 
     protected $_productCustomerIds = array();
 
@@ -44,29 +46,25 @@ extends Mage_Index_Model_Indexer_Abstract
         Varien_Profiler::stop(__METHOD__);
     }
 
-    public function matchEvent(Mage_Index_Model_Event $event)
-    {
-        return false;
-    }
-
     protected function _registerEvent(Mage_Index_Model_Event $event)
     {
-
+        $order = $event->getDataObject();
+        $orderProductIds = $this->_getOrderProductIds($order);
+        $event->addNewData(self::EVENT_PRODUCT_IDS_KEY, $orderProductIds);
     }
 
     protected function _processEvent(Mage_Index_Model_Event $event)
     {
-
-    }
-
-    public function updateOrderProducts(Mage_Sales_Model_Order $order)
-    {
         Varien_Profiler::start(__METHOD__);
-        $productIds = $this->_getOrderProductIds($order);
-        $this->_startUpdate();
-        foreach ($productIds as $productId)
-            $this->_updateProduct($productId);
-        $this->_finishUpdate();
+        $data = $event->getNewData();
+        if (isset($data[self::EVENT_PRODUCT_IDS_KEY])
+            && is_array($data[self::EVENT_PRODUCT_IDS_KEY])
+        ) {
+            $this->_startUpdate();
+            foreach ($data[self::EVENT_PRODUCT_IDS_KEY] as $productId)
+                $this->_updateProduct($productId);
+            $this->_finishUpdate();
+        }
         Varien_Profiler::stop(__METHOD__);
     }
 
@@ -177,8 +175,10 @@ extends Mage_Index_Model_Indexer_Abstract
     {
         // percent of customers who bought either of products
         // that bought both of them
+        // (multiplied by ln() of intersection length)
 
-        $dotProd = count(array_intersect($customerIds, $similarCustomerIds));
+        $intersectCount = count(array_intersect($customerIds, $similarCustomerIds));
+        $dotProd = $intersectCount; // eq. to intersect. length for binary vectors
         if ($dotProd == 0)
             return 0;
         $lengthProd = sqrt(count($customerIds))
@@ -186,6 +186,8 @@ extends Mage_Index_Model_Indexer_Abstract
         if ($lengthProd == 0)
             return 0;
         $similarity = 100 * $dotProd / $lengthProd;
+        if ($intersectCount > 0)
+            $similarity *= (1 + log($intersectCount));
         return $similarity;
     }
 

@@ -51,12 +51,21 @@
         </index>
 
         <events>
+            <sales_order_save_before>
+                <observers>
+                    <alsobuy>
+                        <class>alsobuy/observer</class>
+                        <method>orderSaveBefore</method>
+                    </alsobuy>
+                </observers>
+            </sales_order_save_before>
+
             <sales_order_save_commit_after>
                 <observers>
-                    <alsobuy_order_save_index>
+                    <alsobuy>
                         <class>alsobuy/observer</class>
-                        <method>reindexOnOrderSave</method>
-                    </alsobuy_order_save_index>
+                        <method>orderSaveAfter</method>
+                    </alsobuy>
                 </observers>
             </sales_order_save_commit_after>
         </events>
