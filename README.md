@@ -1,4 +1,4 @@
-mage-recommend
+mage-alsobuy
 ==============
 
-Magento Product recomendation module
+Magento extension adding "Users who bought this also bought..." widget
